@@ -9,6 +9,54 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 // const BASE_URL = 'http://127.0.0.1:8000';
 
 
+export const submitChat = async(message, messages)=>{
+
+  try {
+    const response = await fetch(`${BASE_URL}/api/chat/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+       message,
+       messages,
+      }),
+    });
+
+    const data = await response.json();
+  //   await AsyncStorage.setItem('report', JSON.stringify(data['message']));
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+
+}
+
+export const submitChatToAustralia = async(message, messages)=>{
+
+  try {
+    const response = await fetch(`${BASE_URL}/api/to_do_australia/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+       message,
+       messages,
+      }),
+    });
+
+    const data = await response.json();
+  //   await AsyncStorage.setItem('report', JSON.stringify(data['message']));
+    return data;
+  } catch (error) {
+    console.error('Error in submit to do australia');
+    throw error;
+  }
+
+}
+
 
 export const submitDailyReport = async (token,rangeAgeDailyReport, date, activities) => {
  
@@ -112,54 +160,6 @@ export const submitObservations = async (token,date,name,age,goalObservations,de
     }
 };
 
-export const submitChat = async(message, messages)=>{
-
-  try {
-    const response = await fetch(`${BASE_URL}/api/chat/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-       message,
-       messages,
-      }),
-    });
-
-    const data = await response.json();
-  //   await AsyncStorage.setItem('report', JSON.stringify(data['message']));
-    return data;
-  } catch (error) {
-    console.error('Error:', error);
-    throw error;
-  }
-
-}
-
-export const submitChatToAustralia = async(message, messages)=>{
-
-  try {
-    const response = await fetch(`${BASE_URL}/api/to_do_australia/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-       message,
-       messages,
-      }),
-    });
-
-    const data = await response.json();
-  //   await AsyncStorage.setItem('report', JSON.stringify(data['message']));
-    return data;
-  } catch (error) {
-    console.error('Error in submit to do australia');
-    throw error;
-  }
-
-}
-
 export const submitWeeklyReflection = async(token,date,description_reflection) =>{
   try {
     const response = await fetch(`${BASE_URL}/api/weekly_reflection/`, {
@@ -182,6 +182,7 @@ export const submitWeeklyReflection = async(token,date,description_reflection) =
     throw error;
   }
 }
+
 export const submitWeeklyPlanning  = async(token,date,range_age,goals) =>{
   try {
     const response = await fetch(`${BASE_URL}/api/weekly_planning/`, {
@@ -206,6 +207,37 @@ export const submitWeeklyPlanning  = async(token,date,range_age,goals) =>{
     throw error;
   }
 }
+
+export const submitSummativeAssessment= async(token, date, name, age, outCome1,outCome2,outCome3,outCome4,outCome5) =>{ 
+  try {
+    const response = await fetch(`${BASE_URL}/api/summative-assessment/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token,
+        date,
+        name,
+        age,
+        outCome1,
+        outCome2,
+        outCome3,
+        outCome4,
+        outCome5
+      }),
+
+    });
+
+    const data = await response.json();
+    // await AsyncStorage.setItem('report', JSON.stringify(data['message']));
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+}
+
 
 
 // request to log in and sign up

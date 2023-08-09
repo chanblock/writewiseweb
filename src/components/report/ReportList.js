@@ -36,7 +36,6 @@ const ReportList = () => {
     };
 
     const formatTitle = (title) => {
-        console.log("title",title);
         return title
             .split('_')
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))

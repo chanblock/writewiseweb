@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/Home.css";
 import "../../styles/Auth.css";
 import styles from "../../styles/Card.module.css";
-import { Button, Modal, Form, FormControl, Spinner, Alert, Card, Collapse, InputGroup, FormGroup } from "react-bootstrap";
+import { Button, Modal, Form, FormControl, Spinner, Alert, Card, Row,Col, FormGroup } from "react-bootstrap";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { getListChilds, submitDailyReport, submitGoal, submitObservations, submitCriticalReflection, submitHistoricalReport, submitWeeklyPlanning, submitWeeklyReflection, submitGetVariablesReports, submitFollowUp, fetchLastDocumentData, addNewChild } from '../../api'; // Import the submitDailyReport function
+import { submitSummativeAssessment,getListChilds, submitDailyReport, submitGoal, submitObservations, submitCriticalReflection, submitHistoricalReport, submitWeeklyPlanning, submitWeeklyReflection, submitGetVariablesReports, submitFollowUp, fetchLastDocumentData, addNewChild } from '../../api'; // Import the submitDailyReport function
 import CardGrid from "../CardGrid";
 import ChildForm from "../childcomponents/ChildForm";
 const ListReports = () => {
@@ -18,6 +18,20 @@ const ListReports = () => {
     const handleConfirm = (date) => {
         setDate(date);
     };
+
+    const [childs, setChilds] = useState([]);
+    const [selectedChild, setSelectedChild] = useState("");
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const fetchChilds = async () => {
+            const data = await getListChilds(token);
+            setChilds(data.data);
+        };
+
+        fetchChilds();
+    }, []);
+
 
     // const report view
     const navigate = useNavigate();
@@ -32,21 +46,7 @@ const ListReports = () => {
     const handleClose = () => setShow(false);
     const handleShow = async () => setShow(true);
 
-    const handlePreviousVariablesDailyReport = async () => {
-        setSubmittingPreviousVariables(true);
 
-        const token = localStorage.getItem('token');
-        const lastVariable = await fetchLastDocumentData(token, "daily_report");
-        const variables = lastVariable?.get_variables?.variables;
-        if (variables) {
-            setSubmittingPreviousVariables(false);
-            setActivities(lastVariable.get_variables.variables.activities)
-        } else {
-            setSubmittingPreviousVariables(false);
-            showAlert("not variables found.");
-
-        }
-    }
 
 
     // const to goal
@@ -55,22 +55,7 @@ const ListReports = () => {
     const handleCloseGoal = () => setShowGoal(false);
     const handleShowGoal = () => setShowGoal(true);
 
-    const handlePreviousGoal = async () => {
-        setSubmittingPreviousVariables(true);
-
-        const token = localStorage.getItem('token');
-        const lastVariable = await fetchLastDocumentData(token, "goal_report");
-        const variables = lastVariable?.get_variables?.variables;
-        if (variables) {
-            setSubmittingPreviousVariables(false);
-            // setName(lastVariable.get_variables.variables.name);
-            // setAge(lastVariable.get_variables.variables.age);
-            setGoals(lastVariable.get_variables.variables.goals);
-        } else {
-            setSubmittingPreviousVariables(false);
-            showAlert("not variables found.");
-        }
-    }
+  
     // const to Observations
     const [showObservations, setShowObservations] = useState(false);
     const [goalObservations, setGoalObservations] = useState('');
@@ -78,66 +63,18 @@ const ListReports = () => {
     const handleCloseObservations = () => setShowObservations(false);
     const handleShowObservations = () => setShowObservations(true);
 
-    const handlePreviousObservations = async () => {
-        setSubmittingPreviousVariables(true);
-
-        const token = localStorage.getItem('token');
-        const lastVariable = await fetchLastDocumentData(token, "descriptions_report");
-        const variables = lastVariable?.get_variables?.variables;
-        if (variables) {
-            setSubmittingPreviousVariables(false);
-            // setName(lastVariable.get_variables.variables.name);
-            // setAge(lastVariable.get_variables.variables.age);
-            setDescriptions(lastVariable.get_variables.variables.descriptions);
-            setGoalObservations(lastVariable.get_variables.variables.goal_observations)
-        } else {
-            setSubmittingPreviousVariables(false);
-            showAlert("not variables found.");
-        }
-    }
-
     // const Critical Reflection
     const [showFormReflection, setShowFormReflection] = useState(false);
     const [description, setDescription] = useState('');
     const handleCloseFormReflection = () => setShowFormReflection(false);
     const handleShowFormReflection = () => setShowFormReflection(true);
 
-    const handlePreviousCriticalReflection = async () => {
-        setSubmittingPreviousVariables(true);
-
-        const token = localStorage.getItem('token');
-        const lastVariable = await fetchLastDocumentData(token, "critical_reflection");
-        const variables = lastVariable?.get_variables?.variables;
-        if (variables) {
-            setSubmittingPreviousVariables(false);
-            setDescription(lastVariable.get_variables.variables.description);
-        } else {
-            setSubmittingPreviousVariables(false);
-            showAlert("not variables found.");
-        }
-    }
     // const Weekly Reflection
     const [showFormWeeklyReflection, setShowFormWeeklyReflection] = useState(false);
     const [description_reflection, setDescriptionReflection] = useState('');
     const handleCloseFormWeeklyReflection = () => setShowFormWeeklyReflection(false);
     const handleShowFormWeeklyReflection = () => setShowFormWeeklyReflection(true);
-
-    const handlePreviousWeeklyReflection = async () => {
-        setSubmittingPreviousVariables(true);
-
-        const token = localStorage.getItem('token');
-        const lastVariable = await fetchLastDocumentData(token, "weekly_reflection");
-        const variables = lastVariable?.get_variables?.variables;
-        if (variables) {
-            setSubmittingPreviousVariables(false);
-            if (lastVariable.get_variables.variables.descriptions) {
-                setDescriptionReflection(lastVariable.get_variables.variables.descriptions);
-            }
-        } else {
-            setSubmittingPreviousVariables(false);
-            showAlert("not variables found.");
-        }
-    }
+   
     // const Weekly Planning
     const [showFormWeeklyPlanning, setShowFormWeeklyPlanning] = useState(false);
     const [descriptionPlanning, setDescriptionPlanning] = useState('');
@@ -145,29 +82,44 @@ const ListReports = () => {
     const handleCloseFormWeeklyPlanning = () => setShowFormWeeklyPlanning(false);
     const handleShowFormWeeklyPlanning = () => setShowFormWeeklyPlanning(true);
 
-    const handlePreviousWeeklyPlanning = async () => {
-        setSubmittingPreviousVariables(true);
-
-        const token = localStorage.getItem('token');
-        const lastVariable = await fetchLastDocumentData(token, "weeklyn_planning");
-        const variables = lastVariable?.get_variables?.variables;
-        if (variables) {
-            setSubmittingPreviousVariables(false);
-            if (lastVariable.get_variables.variables.range_age) {
-                setDescriptionReflection(lastVariable.get_variables.variables.range_age);
-            }
-            setDescriptionPlanning(lastVariable.get_variables.variables.goals)
-        } else {
-            setSubmittingPreviousVariables(false);
-            showAlert("not variables found.");
-        }
-    }
     // const to follow up
     const [showFollowUp, setShowFollowUp] = useState(false);
     const [goalFollowUp, setGoalFollowUp] = useState('');
     const [descriptionsFollowUp, setDescriptionsFollowUp] = useState('');
     const handleCloseFollowUp = () => setShowFollowUp(false);
     const handleShowFollowUp = () => setShowFollowUp(true);
+
+   // const summative assessment
+   const [showSummativeAssessment, setShowSummativeAssessment] = useState(false);
+   const [outCome1, setOutCome1]= useState('');
+   const [outCome2, setOutCome2] = useState('');
+   const [outCome3, setOutCome3]= useState('');
+   const [outCome4,setOutCome4] = useState('');
+   const [outCome5, setOutCome5] = useState('');
+   const handleCloseSummativeAssessment = () => setShowSummativeAssessment(false);
+   const handleShowSummativeAssessment = () => setShowSummativeAssessment(true);
+
+   
+    // add child
+    const [isOpen, setIsOpen] = useState(false);
+    const [childName, setChildName] = useState('');
+    const [childAge, setChildAge] = useState('');
+    const [childCare, setChildCare] = useState('');
+    const [isSubmittingChild, setIsSubmittingChild] = useState(false);
+
+    //  const to alert
+    const [alertVisible, setAlertVisible] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [alertType, setAlertType] = useState("info");
+
+    const showAlert = (message, type = "info") => {
+        setAlertMessage(message);
+        setAlertType(type); // Set the alert type
+        setAlertVisible(true);
+        setTimeout(() => {
+            setAlertVisible(false);
+        }, 5000);
+    };
 
     const handlePreviousFollowUp = async () => {
         setSubmittingPreviousVariables(true);
@@ -186,21 +138,9 @@ const ListReports = () => {
 
     }
 
-
-    // const handleRedirect = (title, content, name,childId, age, goalObservations) => {
-    //     navigate("/report", { state: { title, content, name,childId, age, goalObservations } });
-    // };
-
     const handleRedirect = (reportData) => {
         navigate("/report", { state: { reportData } });
     }
-    // add child
-    const [isOpen, setIsOpen] = useState(false);
-    const [childName, setChildName] = useState('');
-    const [childAge, setChildAge] = useState('');
-    const [childCare, setChildCare] = useState('');
-    const [isSubmittingChild, setIsSubmittingChild] = useState(false);
-
 
     const handleSubmitChild = async (e) => {
         e.preventDefault();
@@ -222,21 +162,128 @@ const ListReports = () => {
         setIsSubmittingChild(false);
     }
 
-    //  const to alert
-    const [alertVisible, setAlertVisible] = useState(false);
-    const [alertMessage, setAlertMessage] = useState("");
-    const [alertType, setAlertType] = useState("info");
+
+    const handlePreviousVariablesDailyReport = async () => {
+        setSubmittingPreviousVariables(true);
+
+        const token = localStorage.getItem('token');
+        const lastVariable = await fetchLastDocumentData(token, "daily_report");
+        const variables = lastVariable?.get_variables?.variables;
+        if (variables) {
+            setSubmittingPreviousVariables(false);
+            setActivities(lastVariable.get_variables.variables.activities)
+        } else {
+            setSubmittingPreviousVariables(false);
+            showAlert("not variables found.");
+
+        }
+    }
+
+    const handlePreviousGoal = async () => {
+        setSubmittingPreviousVariables(true);
+
+        const token = localStorage.getItem('token');
+        const lastVariable = await fetchLastDocumentData(token, "goal_report");
+        const variables = lastVariable?.get_variables?.variables;
+        if (variables) {
+            setSubmittingPreviousVariables(false);
+            // setName(lastVariable.get_variables.variables.name);
+            // setAge(lastVariable.get_variables.variables.age);
+            setGoals(lastVariable.get_variables.variables.goals);
+        } else {
+            setSubmittingPreviousVariables(false);
+            showAlert("not variables found.");
+        }
+    }
+
+    const handlePreviousObservations = async () => {
+        setSubmittingPreviousVariables(true);
+
+        const token = localStorage.getItem('token');
+        const lastVariable = await fetchLastDocumentData(token, "descriptions_report");
+        const variables = lastVariable?.get_variables?.variables;
+        if (variables) {
+            setSubmittingPreviousVariables(false);
+            // setName(lastVariable.get_variables.variables.name);
+            // setAge(lastVariable.get_variables.variables.age);
+            setDescriptions(lastVariable.get_variables.variables.descriptions);
+            setGoalObservations(lastVariable.get_variables.variables.goal_observations)
+        } else {
+            setSubmittingPreviousVariables(false);
+            showAlert("not variables found.");
+        }
+    }
+
+    const handlePreviousCriticalReflection = async () => {
+        setSubmittingPreviousVariables(true);
+
+        const token = localStorage.getItem('token');
+        const lastVariable = await fetchLastDocumentData(token, "critical_reflection");
+        const variables = lastVariable?.get_variables?.variables;
+        if (variables) {
+            setSubmittingPreviousVariables(false);
+            setDescription(lastVariable.get_variables.variables.description);
+        } else {
+            setSubmittingPreviousVariables(false);
+            showAlert("not variables found.");
+        }
+    }
+
+    const handlePreviousWeeklyReflection = async () => {
+        setSubmittingPreviousVariables(true);
+
+        const token = localStorage.getItem('token');
+        const lastVariable = await fetchLastDocumentData(token, "weekly_reflection");
+        const variables = lastVariable?.get_variables?.variables;
+        if (variables) {
+            setSubmittingPreviousVariables(false);
+            if (lastVariable.get_variables.variables.descriptions) {
+                setDescriptionReflection(lastVariable.get_variables.variables.descriptions);
+            }
+        } else {
+            setSubmittingPreviousVariables(false);
+            showAlert("not variables found.");
+        }
+    }
+    
+    const handlePreviousWeeklyPlanning = async () => {
+        setSubmittingPreviousVariables(true);
+
+        const token = localStorage.getItem('token');
+        const lastVariable = await fetchLastDocumentData(token, "weeklyn_planning");
+        const variables = lastVariable?.get_variables?.variables;
+        if (variables) {
+            setSubmittingPreviousVariables(false);
+            if (lastVariable.get_variables.variables.range_age) {
+                setDescriptionReflection(lastVariable.get_variables.variables.range_age);
+            }
+            setDescriptionPlanning(lastVariable.get_variables.variables.goals)
+        } else {
+            setSubmittingPreviousVariables(false);
+            showAlert("not variables found.");
+        }
+    }
 
 
-    const showAlert = (message, type = "info") => {
-        setAlertMessage(message);
-        setAlertType(type); // Set the alert type
-        setAlertVisible(true);
-        setTimeout(() => {
-            setAlertVisible(false);
-        }, 5000);
-    };
+    const handlePreviousSummativeAssessment = async () => {
+        setSubmittingPreviousVariables(true);
 
+        const token = localStorage.getItem('token');
+        const lastVariable = await fetchLastDocumentData(token, "summative_assessment");
+        const variables = lastVariable?.get_variables?.variables;
+        if (variables) {
+            setSubmittingPreviousVariables(false);
+            setOutCome1(lastVariable.get_variables.variables.outCome1);
+            setOutCome2(lastVariable.get_variables.variables.outCome2);
+            setOutCome3(lastVariable.get_variables.variables.outCome3);
+            setOutCome4(lastVariable.get_variables.variables.outCome4);
+            setOutCome5(lastVariable.get_variables.variables.outCome5);
+
+        } else {
+            setSubmittingPreviousVariables(false);
+            showAlert("not variables found.");
+        }
+    }
 
     const handleCleanForm = (form) => {
         switch (form) {
@@ -265,6 +312,12 @@ const ListReports = () => {
                 setGoalFollowUp('');
                 setDescriptionsFollowUp('');
                 break;
+            case 'summative_assessment':
+                setOutCome1('');
+                setOutCome2('');
+                setOutCome3('');
+                setOutCome4('');
+                setOutCome5('');
             default:
                 console.log('Formulario no reconocido:', form);
 
@@ -403,7 +456,6 @@ const ListReports = () => {
         try {
             const token = localStorage.getItem("token");
             const data = await submitHistoricalReport(token, typeReport);
-            console.log("handlehistoricalreportsubmission",data)
             // Filtrar los reportes con el mismo 'typeReport'
             const filteredReports = data.list_report.filter(report => report.type_report === typeReport);
 
@@ -527,19 +579,41 @@ const ListReports = () => {
 
     }
 
-    const [childs, setChilds] = useState([]);
-    const [selectedChild, setSelectedChild] = useState("");
+    const handleSubmitSummativeAssessment = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        try {
+            const token = localStorage.getItem('token'); // Obtener el token del local storage
+            const data = await submitSummativeAssessment(token, date, name, age, outCome1,outCome2,outCome3,outCome4,outCome5); // Use the imported function
+            
+            if (data.error) {
+                showAlert(data.error);
+            } else {
+                setSubmitting(false);
+                handleClose();
+                const childId = selectedChild._id;
+                const reportData = {
+                    title: 'Summative Assessment',
+                    content: data['message'],
+                    name,
+                    childId,
+                    age,
+                    outCome1,
+                    outCome2,
+                    outCome3,
+                    outCome4,
+                    outCome5
+                };
+                handleRedirect(reportData);
+            }
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        const fetchChilds = async () => {
-            const data = await getListChilds(token);
-            setChilds(data.data);
-        };
-
-        fetchChilds();
-    }, []);
-
+        } catch (error) {
+            console.error(error);
+            showAlert("Failed to send report. Please try again later.", "danger");
+            setSubmitting(false);
+        }
+    }
+    
     return (
         <div >
             <Modal show={showObservations} onHide={handleCloseObservations}>
@@ -1134,6 +1208,183 @@ const ListReports = () => {
                     </Form>
                 </Modal.Body>
             </Modal>
+            <Modal show={showSummativeAssessment} onHide={handleCloseSummativeAssessment}>
+
+                <Modal.Header closeButton>
+                    <Modal.Title>Summative Assessment</Modal.Title>
+                </Modal.Header>
+                {alertVisible && (
+                    <Alert variant={alertType} onClose={() => setAlertVisible(false)} dismissible>
+                        {alertMessage}
+                    </Alert>
+                )}
+                <Modal.Body>
+                        <ChildForm
+                            isOpen={isOpen}
+                            setIsOpen={setIsOpen}
+                            isSubmittingChild={isSubmittingChild}
+                            handleSubmitChild={handleSubmitChild}
+                            childName={childName}
+                            setChildName={setChildName}
+                            childAge={childAge}
+                            setChildAge={setChildAge}
+                            childCare={childCare}
+                            setChildCare={setChildCare}
+                        />
+                        <Form onSubmit={handleSubmitSummativeAssessment} >
+                            <Row>
+                                <Col>
+                                    <Form.Group controlId="date">
+                                        <Form.Label>Date</Form.Label>
+                                        <DatePicker
+                                            className="form-control"
+                                            selected={date}
+                                            onChange={handleConfirm}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col>
+                                    <FormGroup controlId="buttonAddChild">
+                                    <Form.Label><br></br></Form.Label><br></br>
+                                    <Button  onClick={() => setIsOpen(!isOpen)}>{isOpen ? 'Close' : 'Add Child'}</Button>
+                                    </FormGroup>
+                                </Col>
+                            </Row>
+                            <br />
+                            <Row>
+                                <Col>
+                                    <Form.Group controlId="name">
+                                        <Form.Label>Name</Form.Label>
+                                        <Form.Control
+                                            as="select"
+                                            value={selectedChild ? selectedChild._id : ""}
+                                            onChange={(e) => {
+                                                const selected = childs.find(child => child._id === e.target.value);
+                                                if (selected) {
+                                                    setSelectedChild(selected);
+                                                    setName(selected.child_name);
+                                                    setAge(selected.age);
+                                                } else {
+                                                    console.log("No child found with id: ", e.target.value);
+                                                }
+                                            }}
+                                            required
+                                        >
+
+                                            {/* <option value="" disabled={selectedChild !== ""}>Select child</option>
+                                        {childs.map((child) => (
+                                            <option key={child._id} value={child._id}>
+                                            {child.child_name}
+                                            </option>
+                                        ))} */}
+                                            <option value="" disabled={selectedChild !== ""}>Select child</option>
+                                            {childs.length > 0 ? (
+                                                childs.map((child) => (
+                                                    <option key={child._id} value={child._id}>
+                                                        {child.child_name}
+                                                    </option>
+                                                ))
+                                            ) : (
+                                                <option disabled>No children available, please add a child.</option>
+                                            )}
+                                        </Form.Control>
+                                    </Form.Group>
+                                </Col>
+                                <Col>
+                                    <Form.Group controlId="age">
+                                        <Form.Label>Age</Form.Label>
+                                        <Form.Control
+                                            type="number"
+                                            value={age}
+                                            placeholder="Example: 1,7"
+                                            onChange={(e) => setAge(e.target.value)}
+                                            required
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <br />
+                            <Form.Group controlId="outcome1">
+                                <Form.Label>Outcome1 Children have a strong sense of identity:</Form.Label>
+                                <FormControl
+                                    as="textarea"
+                                    rows={4}
+                                    placeholder="Example: Children have a strong sense of identity: they prefer to play and be alone, they look for their teachers when they are afraid, they participate in reading groups, they know what they want, they are whimsical"
+                                    value={outCome1}
+                                    onChange={(e) => setOutCome1(e.target.value)}
+                                    required
+                                />
+                            </Form.Group>
+                            <br />
+                            <Form.Group controlId="outcome2">
+                                <Form.Label>Outcome2 Children are connected with and contribute to their world:</Form.Label>
+                                <FormControl
+                                    as="textarea"
+                                    rows={4}
+                                    placeholder="Example:Children are connected with and contribute to their world: he is kind, he is not aggressive, he respects others"
+                                    value={outCome2}
+                                    onChange={(e) => setOutCome2(e.target.value)}
+                                    required
+                                />
+                            </Form.Group> 
+                            <br />
+                            <Form.Group controlId="outcome3">
+                                <Form.Label>Outcome3 Children have a strong sense of wellbeing:</Form.Label>
+                                <FormControl
+                                    as="textarea"
+                                    rows={4}
+                                    placeholder="Example:Children have a strong sense of wellbeing: they do not like to wear the hat or the suncream when they go out, it is difficult to start the toilet training process because they refuse to sit down despite the fact that the educators create different strategies"
+                                    value={outCome3}
+                                    onChange={(e) => setOutCome3(e.target.value)}
+                                    required
+                                />
+                            </Form.Group>
+                            <br />
+                            <Form.Group controlId="outcome4">
+                                <Form.Label>Outcome4 Children are confident and involved learners:</Form.Label>
+                                <FormControl
+                                    as="textarea"
+                                    rows={4}
+                                    placeholder="Example:Children are confident and involved learners: chooses what they want to learn, answers correctly when they feel confident, during art and craft activities is drawn to activities where markers are used, likes reading sections and looks for books to look at"
+                                    value={outCome4}
+                                    onChange={(e) => setOutCome4(e.target.value)}
+                                    required
+                                />
+                            </Form.Group>
+                            <br />
+                            <Form.Group controlId="outcome5">
+                                <Form.Label>Outcome5 Children are effective communicators:</Form.Label>
+                                <FormControl
+                                    as="textarea"
+                                    rows={4}
+                                    placeholder="Example:Children are effective communicators: he is shy when talking to other friends or teachers despite having good verbal skills, he prefers non-verbal communication"
+                                    value={outCome5}
+                                    onChange={(e) => setOutCome5(e.target.value)}
+                                    required
+                                />
+                            </Form.Group>
+                            <br />
+                            <Button variant="primary" type="submit" disabled={submitting} size="sm">
+                                {submitting ? (
+                                    <Spinner animation="border" size="sm" />
+                                ) : (
+                                    "Submit"
+                                )}
+                            </Button>{' '}
+                            <Button variant="secondary" onClick={handlePreviousSummativeAssessment} disabled={submittingPreviousVariables} size="sm" >
+                                {submittingPreviousVariables ? (
+                                    <Spinner animation="border" size="sm" />
+                                ) : (
+                                    "Previous Variables"
+                                )}
+                            </Button>{' '}
+                            <Button variant="light" onClick={() => handleCleanForm('summative_assessment')} size="sm" >
+                                Clean
+                            </Button>
+
+                        </Form>
+                </Modal.Body>
+            </Modal>
             <CardGrid>
                 <div className={styles.cardContainer} style={{ width: '22rem' }}>
                     <Card.Body>
@@ -1227,8 +1478,8 @@ const ListReports = () => {
                         <Card.Title>Weekly Planning</Card.Title>
                         <br></br>
                         <Card.Text>
-                            Structure and consistency to  Weekly plan age-appropriate activities that support children's development.
-                        </Card.Text><br></br>
+                        Weekly planning activities creator by goal.
+                        </Card.Text><br /><br /><br />
                         {/* <Button onClick={() => handleHistoricalReportSubmission('observations_report')} size='sm'> From daily reflection
                         </Button>{' '} */}
                         <Button onClick={handleShowFormWeeklyPlanning} size='sm'> Create
@@ -1249,10 +1500,30 @@ const ListReports = () => {
                         </Card.Text>
                         <br></br>
                         <br></br>
+                        <br></br>
+
                         <Button onClick={handleShowFollowUp} size='sm' >
                             Create
                         </Button> {' '}
                         <Button onClick={() => handleHistoricalReportSubmission('follow_up')} variant="success" size='sm' >
+                            Historical
+                        </Button>
+                    </Card.Body>
+                </div>
+                <div className={styles.cardContainer} style={{ width: '22rem' }}>
+                    <Card.Body>
+                        <Card.Title>Summative Assessment</Card.Title>
+                        <br></br>
+                        <Card.Text>
+                                Evaluation that determines a child's level of achievement and development in relation to established learning standards.
+                            <br></br>
+                        </Card.Text>
+                        <br></br>
+                        
+                        <Button onClick={handleShowSummativeAssessment} size='sm' >
+                            Create
+                        </Button> {' '}
+                        <Button onClick={() => handleHistoricalReportSubmission('summative_assessment')} variant="success" size='sm' >
                             Historical
                         </Button>
                     </Card.Body>

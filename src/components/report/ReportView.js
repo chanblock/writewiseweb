@@ -26,7 +26,12 @@ const ReportView = () => {
     description_reflection="" ,
     descriptionPlanning="",
     rangeAgeDailyReport="",
-    rangeAge
+    rangeAge,
+    outCome1,
+    outCome2,
+    outCome3,
+    outCome4,
+    outCome5
 } = location.state.reportData || {};
   const [editedContent, setEditedContent] = useState("");
  // Set the initial state of editedContent when the component mounts or content changes
@@ -87,6 +92,9 @@ const ReportView = () => {
           case 'Goal Report':
               data = await submitSaveReport(token, typeReport, report, name, childId, age,null, null,null,null);
               break;
+          case 'Summative Assessment':
+              data = await submitSaveReport(token, typeReport, report, name, childId, age,null, null,null,null,outCome1,outCome2,outCome3,outCome4,outCome5);
+          break;
           case 'Follow up':
               data = await submitSaveReport(token, typeReport, report, name, childId, age,null, null,null, goalFollowUp);
               break;
