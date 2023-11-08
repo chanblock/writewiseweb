@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/Chat.css'
 import '../styles/Home.css'
-import { submitChat } from '../api';
+import { submitChat, submitChatToAustralia } from '../api';
 
-const Chat = () => {
+const ToDoAustralia = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false); // Añade esta línea
@@ -22,7 +22,7 @@ const Chat = () => {
     // Lógica para enviar mensajes y obtener respuesta del servidor
     // ...
     // Añade tu lógica aquí
-    const data = await submitChat(input, messages)
+    const data = await submitChatToAustralia(input)
     setMessages([...messages, { role: 'user', content: input }, { role: 'assistant', content: data.message }]);
     setInput('');
     setIsLoading(false); // Añade esta línea
@@ -68,4 +68,4 @@ const Chat = () => {
   );
 }
 
-export default Chat;
+export default ToDoAustralia;

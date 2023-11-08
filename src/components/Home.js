@@ -1,284 +1,119 @@
-import React, { useState } from "react";
-import { Link , useNavigate } from "react-router-dom";
+import React, { useRef, useState,useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Home.css";
-import { Button, Modal, Form, FormControl, Spinner } from "react-bootstrap";
-import DatePicker from 'react-datepicker';
+import "../styles/Auth.css";
+import styles from "../styles/Card.module.css";
+import { Button, Card } from "react-bootstrap";
 import 'react-datepicker/dist/react-datepicker.css';
-import { submitDailyReport,submitGoal,submitObservations } from '../api'; // Import the submitDailyReport function
-
+import CardGrid from "./CardGrid";
+// import { checkSubscription } from "../api";
 
 const Home = () => {
-
-    const [name, setName] = useState("");
-    const [age, setAge] = useState("");
-    const [date, setDate] = useState(new Date());
-    const handleConfirm = (date) => {
-        setDate(date);
-    };
-
-    // const daily report
-    const [show, setShow] = useState(false);
-    const [submitting, setSubmitting] = useState(false);
-    const [activities, setActivities] = useState("");
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-   
-
-    // const to goal
-    const [showGoal, setShowGoal] = useState(false);
-    const [goals, setGoals] = useState('');
-    const handleCloseGoal = () => setShowGoal(false);
-    const handleShowGoal = () => setShowGoal(true);
-    
-    // const to Observations
-    const [showObservations, setShowObservations] = useState(false);
-    const [goalObservations, setGoalObservations] = useState('');
-    const [descriptions, setDescriptions]= useState('');
-    const handleCloseObservations = () => setShowObservations(false);
-    const handleShowObservations = () => setShowObservations(true);
-
-    // const report view
-    const navigate = useNavigate();
-    const[reportTitle, setReportTitle]= useState('');
-    const[reportContent, setReportContent]= useState('');
-    const handleRedirect = (title, content) => {
-        navigate("/report", { state: { title, content } });
-      };
+    // const [fullAccess, setFullAccess] = useState(localStorage.getItem("fullAccess") === "true");
+    // const updateFullAccessStatus = async () => {
+    //     try {
+    //       // Reemplaza 'getUserData' con la función que obtiene la información del usuario a través de la API.
+    //       const userData = await checkSubscription(localStorage.getItem("token"));
+     
+    //       if (userData.subscription_end_date !== false){
+    //         const today = new Date();
+    //         const subscriptionEndDate = new Date(userData.subscription_end_date);
+    //         const days = Math.ceil((subscriptionEndDate - today) / (1000 * 60 * 60 * 24));
+    //         if (days <= 0){
+    //           localStorage.setItem("fullAccess", false);
+    //           setFullAccess(false);
+    //         }else{
+    //           localStorage.setItem("fullAccess", true);
+    //           setFullAccess(true);
+    //         }
+    //      }
+    //       // Asegúrate de actualizar el estado de fullAccess después de cambiar el valor en localStorage
       
+    //     } catch (error) {
+    //       console.error('Failed to update full access status:', error);
+    //     }
+    //   };
     
- 
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setSubmitting(true);
-        
-        const data = await submitDailyReport(name, date, activities); // Use the imported function
-        // const data = await response.json();
-        console.log(data)
-        
-        setTimeout(() => {
-            setSubmitting(false);
-            handleClose();
-            handleRedirect('Daily Report', data['message']);
-          }, 2000);
-    };
-
-    const handleSubmitGoal = async (e) => {
-        e.preventDefault();
-        setSubmitting(true);
-        
-        const data = await submitGoal(date,name,age,goals); // Use the imported function
-        // const data = await response.json();
-        console.log(data)
-    
-        // Simulación de una petición que tarda 2 segundos en completarse
-        setTimeout(() => {
-            setSubmitting(false);
-            handleClose();
-            handleRedirect('Goal Report', data['message']);
-          }, 2000);
+      // useEffect(() => {
+      //   // Verifica si el usuario está autenticado antes de llamar a 'updateFullAccessStatus'
+      //   if (localStorage.getItem("token")) {
+      //     updateFullAccessStatus();
+      //   }
+      //   }, []);
+      //   useEffect(() => {
+      //     const handleStorageChange = (e) => {
+      //       if (e.key === 'fullAccess') {
+      //         setFullAccess(e.newValue === "true");
+      //       }
+      //     };
       
-    };
+      //     window.addEventListener('storage', handleStorageChange);
+      
+      //     // Limpieza al desmontar el componente
+      //     return () => {
+      //       window.removeEventListener('storage', handleStorageChange);
+      //     };
+      //   }, []);
 
-    const handleSubmitObservations = async (e) => {
-        e.preventDefault();
-        setSubmitting(true);
-        const data = await submitObservations(date,name,age,goalObservations,descriptions); // Use the imported function
-        // const data = await response.json();
-        console.log(data)
-    
-        // Simulación de una petición que tarda 2 segundos en completarse
-        setTimeout(() => {
-            setSubmitting(false);
-            handleClose();
-            handleRedirect('Descriptions Report', data['message']);
-          }, 2000);
-    };
-
+    // const fullAccess = localStorage.getItem("fullAccess") === "true";
     return (
-        <div className="main-view">
-            <div className="button-container">
-               <Button className="main-view-btn main-view-btn-primary" size="lg" onClick={handleShowObservations} >
-                     Observations
-                </Button>
-                <Modal show={showObservations} onHide={handleCloseObservations}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Report Goal</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form onSubmit={handleSubmitObservations}>
-                            <Form.Group controlId="date">
-                                <Form.Label>Date</Form.Label>
-                                <DatePicker
-                                    className="form-control"
-                                    selected={date}
-                                    onChange={handleConfirm}
-                                />
-                            </Form.Group>
-                            <br />
-                            <Form.Group controlId="name">
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-                            <br />
-                            <Form.Group controlId="age">
-                                <Form.Label>Age</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    value={age}
-                                    onChange={(e) => setAge(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-                            <br />
-                            <Form.Group controlId="goals">
-                                <Form.Label>Goals</Form.Label>
-                                <FormControl
-                                    as="textarea"
-                                    rows={3}
-                                    value={goalObservations}
-                                    onChange={(e) => setGoalObservations(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-                            <br />
-                            <Form.Group controlId="goals">
-                                <Form.Label>Descriptions</Form.Label>
-                                <FormControl
-                                    as="textarea"
-                                    rows={3}
-                                    value={descriptions}
-                                    onChange={(e) => setDescriptions(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-                          
-                            <br />
-                            <Button variant="primary" type="submit" disabled={submitting}>
-                                {submitting ? (
-                                    <Spinner animation="border" size="sm" />
-                                ) : (
-                                    "Enviar"
-                                )}
+        <div >
+            <CardGrid>
+            <div className={styles.cardContainer} style={{ width: '22rem' }}>
+                    <Card.Body>
+                        <Card.Title>Child Care Expert</Card.Title>
+                        <br></br>
+                        <Card.Text>
+                            Have a question? Start a conversation and get the answers you need.
+                        </Card.Text>
+                        {/* <Link to="/list_reports"  className={!fullAccess ? "link-disabled" : ""}> */}
+                        <Link to="/list_reports" >
+
+                            <Button >
+                                Show options
                             </Button>
-                        </Form>
-                    </Modal.Body>
-                </Modal>
-                <Button className="main-view-btn main-view-btn-success" size="lg" onClick={handleShow}>
-                    Daily Report
-                </Button>
-                <Modal show={show} onHide={handleClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Daily Report</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form onSubmit={handleSubmit}>
-                            <Form.Group controlId="date">
-                                <Form.Label>Date</Form.Label>
-                                <DatePicker
-                                    className="form-control"
-                                    selected={date}
-                                    onChange={handleConfirm}
-                                />
-                            </Form.Group>
-                            <Form.Group controlId="namte">
-                                <Form.Label>Nombre</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-                            <Form.Group controlId="activities">
-                                <Form.Label>Actividades</Form.Label>
-                                <Form.Control
-                                    as="textarea"
-                                    rows={3}
-                                    value={activities}
-                                    onChange={(e) => setActivities(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-                            <br></br>
-                            <Button variant="primary" type="submit" disabled={submitting}>
-                                {submitting ? (
-                                    <Spinner animation="border" size="sm" />
-                                ) : (
-                                    "Enviar"
-                                )}
+                        </Link>
+                    </Card.Body>
+
+                </div>
+                <div className={styles.cardContainer} style={{ width: '22rem' }}>
+                    <Card.Body>
+                        <Card.Title>How to do in Australia</Card.Title>
+                        <br></br>
+                        <Card.Text>
+                            Explore tips and information about traveling to and living in Australia.
+                        </Card.Text>
+                        <Link to="/to_do_australia">
+                            <Button  >
+                                How to do in Australia
                             </Button>
-                        </Form>
-                    </Modal.Body>
-                </Modal>
-                <Button className="main-view-btn main-view-btn-warning" size="lg"  onClick={handleShowGoal}>
-                    Goal
-                </Button>
-                <Modal show={showGoal} onHide={handleCloseGoal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Report Goal</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form onSubmit={handleSubmitGoal}>
-                            <Form.Group controlId="date">
-                                <Form.Label>Date</Form.Label>
-                                <DatePicker
-                                    className="form-control"
-                                    selected={date}
-                                    onChange={handleConfirm}
-                                />
-                            </Form.Group>
-                            <Form.Group controlId="name">
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-                            <Form.Group controlId="age">
-                                <Form.Label>Age</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    value={age}
-                                    onChange={(e) => setAge(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-                            <Form.Group controlId="goals">
-                                <Form.Label>Goals</Form.Label>
-                                <FormControl
-                                    as="textarea"
-                                    rows={3}
-                                    value={goals}
-                                    onChange={(e) => setGoals(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-                            <br />
-                            <Button variant="primary" type="submit" disabled={submitting}>
-                                {submitting ? (
-                                    <Spinner animation="border" size="sm" />
-                                ) : (
-                                    "Enviar"
-                                )}
+                        </Link>
+                    </Card.Body>
+                </div>
+                <div className={styles.cardContainer} style={{ width: '22rem' }}>
+
+                    <Card.Body>
+                        <Card.Title>Ask me anything (Chat)</Card.Title>
+                        <br></br>
+                        <Card.Text>
+                            Have a question? Start a conversation and get the answers you need.
+                        </Card.Text>
+                        {/* <Link to="/chat" className={!fullAccess ? "link-disabled" : ""}> */}
+                        <Link to="/chat" >
+
+                            <Button >
+                                Ask me anything (Chat)
                             </Button>
-                        </Form>
-                    </Modal.Body>
-                </Modal>
-                <Link to="/chat">
-                    <Button className="main-view-btn main-view-btn-info" size="lg">
-                        Chat
-                    </Button>
-                </Link>
-            </div>
+                        </Link>
+                    </Card.Body>
+
+                </div>
+                
+            </CardGrid>
+
+
         </div>
+
     );
 };
 
