@@ -84,7 +84,6 @@ const Auth = ({ updateAuth,props}) => {
       localStorage.setItem('token', data.token);
       localStorage.setItem("username", data.username);
 
-
       if (data.error) {
         setLoading(false);
         console.log("error in data register user")
@@ -95,7 +94,13 @@ const Auth = ({ updateAuth,props}) => {
         // localStorage.setItem('token', data.token);
         setLoading(false);
         updateAuth(true); // Update the authentication status
-        navigate('/');
+        // navigate('/');
+       
+
+        setTimeout(() => {
+          setAlertVisible(false);
+          navigate('/');
+        }, 4000);
 
         
       }
@@ -264,121 +269,121 @@ const Auth = ({ updateAuth,props}) => {
   };
 
   return (
+    <><Alert variant="warning" style={{ textAlign: 'center' }}>
+      Please note: Write Wise will cease operations as of November 30th this year.
+    </Alert>
     <div className="auth-container">
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Hi</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{messageModal}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleCloseModal}>
-            Suscribe
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <div className="auth-card">
-      
-        {/* <h2>{isLogin ? 'Log in' : 'Sign up'}</h2> */}
-        <h2>{isReset ? 'Reset Password' : (isLogin ? 'Log in' : 'Sign up')}</h2>
-        <hr></hr>
-        {alertVisible && (
-          <Alert variant={alertType} onClose={() => setAlertVisible(false)} dismissible>
-            {alertMessage}
-          </Alert>
-        )}
-        {/* <form className="auth-form" onSubmit={handleSubmit}> */}
-        <form className="auth-form" onSubmit={isReset ? handleResetRequest : handleSubmit} >
-          {/* {!isLogin && ( */}
-          {!isReset && !isLogin && (
-            <>  <input
-              type="text"
-              name="username"
-              placeholder="Username"
-              required />
-              <input
-                type="text"
-                name="phone"
-                placeholder="phone"
-                required />
-                
-            </>
-          )}
-      
 
-          {isReset ? (
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              required
-            />
-          ) : (
-            <>
+        <Modal show={showModal} onHide={handleCloseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Hi</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{messageModal}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseModal}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleCloseModal}>
+              Suscribe
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        <div className="auth-card">
+
+          {/* <h2>{isLogin ? 'Log in' : 'Sign up'}</h2> */}
+          <h2>{isReset ? 'Reset Password' : (isLogin ? 'Log in' : 'Sign up')}</h2>
+          <hr></hr>
+          {alertVisible && (
+            <Alert variant={alertType} onClose={() => setAlertVisible(false)} dismissible>
+              {alertMessage}
+            </Alert>
+          )}
+          {/* <form className="auth-form" onSubmit={handleSubmit}> */}
+          <form className="auth-form" onSubmit={isReset ? handleResetRequest : handleSubmit}>
+            {/* {!isLogin && ( */}
+            {!isReset && !isLogin && (
+              <>  <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                required />
+                <input
+                  type="text"
+                  name="phone"
+                  placeholder="phone"
+                  required />
+
+              </>
+            )}
+
+
+            {isReset ? (
               <input
                 type="email"
                 name="email"
                 placeholder="Email"
-                required
-              />
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                required
-              />
-            </>
-          )}
-          {/* {!isReset && !isLogin && (
-              <div className="checkbox-container">
-              <input
-                type="checkbox"
-                id="userType"
-                name="userType"
-                value="childcareWorker"
-                className="big-checkbox"
-              />
-              <label htmlFor="userType" className="checkbox-label">Are you a Childcare Worker?</label>
-            </div>
-          )} */}
-          <button className="button-shared  auth-submit" type="submit">
-            {isReset ? 'Request Reset' : (isLogin ? 'Log in' : 'Sign up')}
-            {loading && (
-              <Spinner
-                animation="border"
-                size="sm"
-                style={{ marginLeft: '8px' }}
-              />
+                required />
+            ) : (
+              <>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  required />
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  required />
+              </>
             )}
-          </button>
-    
-
-        </form>
-              
-
-           <button className="button-shared  auth-toggle " onClick={toggleAuthMode}>
-        {isReset
-          ? 'Back to Login'
-          : (isLogin
-              ? 'You do not have an account? Sign up'
-              : 'Do you already have an account? Log in')}
-      </button>
-
-      {!isReset && (
-        <button
-          className="button-shared  auth-toggle "
-          onClick={() => setIsReset(true)}
-        >
-          Forgot Password?
-        </button>
-      )}
-      <br></br>
-     
-
+            {/* {!isReset && !isLogin && (
+        <div className="checkbox-container">
+        <input
+          type="checkbox"
+          id="userType"
+          name="userType"
+          value="childcareWorker"
+          className="big-checkbox"
+        />
+        <label htmlFor="userType" className="checkbox-label">Are you a Childcare Worker?</label>
       </div>
-    </div>
+    )} */}
+            <button className="button-shared  auth-submit" type="submit">
+              {isReset ? 'Request Reset' : (isLogin ? 'Log in' : 'Sign up')}
+              {loading && (
+                <Spinner
+                  animation="border"
+                  size="sm"
+                  style={{ marginLeft: '8px' }} />
+              )}
+            </button>
+
+
+          </form>
+
+
+          <button className="button-shared  auth-toggle " onClick={toggleAuthMode}>
+            {isReset
+              ? 'Back to Login'
+              : (isLogin
+                ? 'You do not have an account? Sign up'
+                : 'Do you already have an account? Log in')}
+          </button>
+
+          {!isReset && (
+            <button
+              className="button-shared  auth-toggle "
+              onClick={() => setIsReset(true)}
+            >
+              Forgot Password?
+            </button>
+          )}
+          <br></br>
+
+
+        </div>
+      </div></>
   );
 };
 

@@ -616,6 +616,9 @@ const ListReports = () => {
     
     return (
         <div >
+            <Alert variant="warning" style={{textAlign: 'center'}}>
+                Please note: Write Wise will cease operations as of November 30th this year.
+            </Alert>
             <Modal show={showObservations} onHide={handleCloseObservations}>
 
                 <Modal.Header closeButton>
@@ -748,6 +751,9 @@ const ListReports = () => {
                 </Modal.Body>
             </Modal>
             <Modal show={show} onHide={handleClose}>
+            <Alert variant="warning" style={{textAlign: 'center'}}>
+                Please note: Write Wise will cease operations as of November 30th this year.
+            </Alert>
                 <Modal.Header closeButton>
                     <Modal.Title>Daily Report</Modal.Title>
                 </Modal.Header>
