@@ -1,0 +1,38 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90vh;
+    text-align: center;
+}
+
+.title {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.text {
+    font-size: 1.2em;
+}
+
+.highlight {
+    font-weight: bold;
+    color: blue;
+}
+
+.link {
+    color: red;
+    text-decoration: none;
+}
+
+/* Media query para pantallas pequeñas (por ejemplo, móviles) */
+@media (max-width: 600px) {
+    .title {
+        font-size: 1.5em;
+    }
+
+    .text {
+        font-size: 1em;
+    }
+}

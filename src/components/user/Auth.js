@@ -269,8 +269,8 @@ const Auth = ({ updateAuth,props}) => {
   };
 
   return (
-    <><Alert variant="warning" style={{ textAlign: 'center' }}>
-      Please note: Write Wise will cease operations as of November 30th this year.
+    <><Alert variant="danger" style={{ textAlign: 'center' }}>
+          Please note: Write Wise will cease operations as of November 30th this year. We're excited to announce that our services will continue under a new domain. Make sure to bookmark our new address: <a href="https://welby.com.au/" target="_blank">https://welby.com.au/</a>.
     </Alert>
     <div className="auth-container">
 

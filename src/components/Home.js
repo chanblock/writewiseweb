@@ -3,61 +3,19 @@ import { Link, useNavigate } from "react-router-dom";
 import "../styles/Home.css";
 import "../styles/Auth.css";
 import styles from "../styles/Card.module.css";
-import { Button, Card } from "react-bootstrap";
+import { Button, Card,Alert } from "react-bootstrap";
 import 'react-datepicker/dist/react-datepicker.css';
 import CardGrid from "./CardGrid";
 // import { checkSubscription } from "../api";
 
 const Home = () => {
-    // const [fullAccess, setFullAccess] = useState(localStorage.getItem("fullAccess") === "true");
-    // const updateFullAccessStatus = async () => {
-    //     try {
-    //       // Reemplaza 'getUserData' con la función que obtiene la información del usuario a través de la API.
-    //       const userData = await checkSubscription(localStorage.getItem("token"));
-     
-    //       if (userData.subscription_end_date !== false){
-    //         const today = new Date();
-    //         const subscriptionEndDate = new Date(userData.subscription_end_date);
-    //         const days = Math.ceil((subscriptionEndDate - today) / (1000 * 60 * 60 * 24));
-    //         if (days <= 0){
-    //           localStorage.setItem("fullAccess", false);
-    //           setFullAccess(false);
-    //         }else{
-    //           localStorage.setItem("fullAccess", true);
-    //           setFullAccess(true);
-    //         }
-    //      }
-    //       // Asegúrate de actualizar el estado de fullAccess después de cambiar el valor en localStorage
-      
-    //     } catch (error) {
-    //       console.error('Failed to update full access status:', error);
-    //     }
-    //   };
     
-      // useEffect(() => {
-      //   // Verifica si el usuario está autenticado antes de llamar a 'updateFullAccessStatus'
-      //   if (localStorage.getItem("token")) {
-      //     updateFullAccessStatus();
-      //   }
-      //   }, []);
-      //   useEffect(() => {
-      //     const handleStorageChange = (e) => {
-      //       if (e.key === 'fullAccess') {
-      //         setFullAccess(e.newValue === "true");
-      //       }
-      //     };
-      
-      //     window.addEventListener('storage', handleStorageChange);
-      
-      //     // Limpieza al desmontar el componente
-      //     return () => {
-      //       window.removeEventListener('storage', handleStorageChange);
-      //     };
-      //   }, []);
-
-    // const fullAccess = localStorage.getItem("fullAccess") === "true";
     return (
         <div >
+            <Alert variant="danger" style={{ textAlign: 'center' }}>
+                Please note: Write Wise will cease operations as of November 30th this year. We're excited to announce that our services will continue under a new domain. Make sure to bookmark our new address: <a href="https://welby.com.au/" target="_blank">https://welby.com.au/</a>.
+            </Alert>
+
             <CardGrid>
             <div className={styles.cardContainer} style={{ width: '22rem' }}>
                     <Card.Body>
