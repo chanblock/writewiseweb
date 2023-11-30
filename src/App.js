@@ -20,6 +20,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import ReferralRegister from "./components/user/ReferralRegister";
 import ChildList from "./components/child/ChildList";
 import { ChildsProvider } from "./components/childcomponents/ChildsProvider";
+import Page404 from "./components/Page404";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isfullAccess, setFullAccess] = useState(false); 
@@ -60,21 +61,23 @@ function App() {
     // <Elements stripe={stripePromise} options={{ locale: 'en-AU' }}>
       <Router basename="/writewiseweb">
         <div className="App">
-        <ChildsProvider>
-          <Navbar isAuthenticated={isAuthenticated} updateAuth={updateAuth} />
-          </ChildsProvider>
+        {/* <ChildsProvider> */}
+          {/* <Navbar isAuthenticated={isAuthenticated} updateAuth={updateAuth} /> */}
+          {/* </ChildsProvider> */}
             <Routes>
-              <Route path="/" element={<RequireAuth isAuthenticated={isAuthenticated}><Home /></RequireAuth>} />
+            <Route path="/" element={<Page404/>} />
+
+              {/* <Route path="/" element={<RequireAuth isAuthenticated={isAuthenticated}><Home /></RequireAuth>} /> */}
               {/* Control de acceso a las rutas en base a userType y isfullAccess */}
                 {/* {isfullAccess && isUserType === "usergeneral" &&  */}
-                <>
+                {/* <>
                   <Route path="/chat" element={<RequireAuth isAuthenticated={isAuthenticated}><Chat /></RequireAuth>} />
                   <Route path="/to_do_australia" element={<RequireAuth isAuthenticated={isAuthenticated}><ToDoAustralia /></RequireAuth>} />
-                  </>
+                  </> */}
                 {/* } */}
               
               {/* {isfullAccess && isUserType === "childcareWorker" && */}
-                  <>
+                  {/* <>
                   <Route path="/chat" element={<RequireAuth isAuthenticated={isAuthenticated}><Chat /></RequireAuth>} />
                   <Route path="/to_do_australia" element={<RequireAuth isAuthenticated={isAuthenticated}><ToDoAustralia /></RequireAuth>} />
                   <Route path="/list_reports" element={ <RequireAuth isAuthenticated={isAuthenticated}><ListReports /></RequireAuth>}/>
@@ -85,18 +88,18 @@ function App() {
                       <ChildList />
                     </ChildsProvider>
                     </RequireAuth>} />
-                  </>
+                  </> */}
               {/* } */}
               {/* {!isfullAccess  && */}
-                  <Route path="/to_do_australia" element={<RequireAuth isAuthenticated={isAuthenticated}><ToDoAustralia /></RequireAuth>} />
+                  {/* <Route path="/to_do_australia" element={<RequireAuth isAuthenticated={isAuthenticated}><ToDoAustralia /></RequireAuth>} /> */}
 
               {/* } */}
-              <Route path="/report" element={<RequireAuth isAuthenticated={isAuthenticated}><ReportView /></RequireAuth>} />
+              {/* <Route path="/report" element={<RequireAuth isAuthenticated={isAuthenticated}><ReportView /></RequireAuth>} />
               <Route path="/auth"  element={<Auth updateAuth={updateAuth} />} />
               <Route path="/reset-password/:token" element={<ResetPassword />} />
               <Route path="/subscription" element={<Subscription />} />
               <Route path="/payment-page" element={<PaymentPage />} />
-              <Route path="/referral-link/:referralId" element={<ReferralRegister />} />
+              <Route path="/referral-link/:referralId" element={<ReferralRegister />} /> */}
 
             </Routes> 
           
